@@ -1,0 +1,13 @@
+.env
+.env.local
+.env.*.local
+node_modules/
+build/
+dist/
+*.log
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~backend/uploads/
