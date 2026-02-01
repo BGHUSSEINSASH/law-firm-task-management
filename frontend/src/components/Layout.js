@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { FiLogOut, FiMenu, FiX, FiHome, FiCheckSquare, FiBell, FiBarChart3, FiFileText, FiBriefcase, FiMapPin, FiBuilding2, FiUser, FiUsers, FiActivity, FiGrid, FiCreditCard, FiShield, FiLock } from 'react-icons/fi';
+import { FiLogOut, FiMenu, FiX, FiHome, FiCheckSquare, FiBell, FiBarChart2, FiFileText, FiBriefcase, FiMapPin, FiUser, FiUsers, FiActivity, FiGrid, FiCreditCard, FiShield, FiLock } from 'react-icons/fi';
 import NotificationsCenter from './NotificationsCenter';
 
 export const Layout = ({ children }) => {
@@ -19,12 +19,12 @@ export const Layout = ({ children }) => {
     { icon: FiCheckSquare, label: 'المهام', href: '/tasks' },
     { icon: FiGrid, label: 'Kanban', href: '/tasks-kanban' },
     { icon: FiBell, label: 'الإشعارات', href: '/notifications' },
-    { icon: FiBarChart3, label: 'التقارير', href: '/reports' },
+    { icon: FiBarChart2, label: 'التقارير', href: '/reports' },
     { icon: FiCreditCard, label: 'الفواتير', href: '/invoices' },
     { icon: FiActivity, label: 'سجل النشاطات', href: '/activity-log' },
     { icon: FiBriefcase, label: 'العملاء', href: '/clients' },
     { icon: FiMapPin, label: 'المراحل', href: '/stages' },
-    { icon: FiBuilding2, label: 'الأقسام', href: '/departments' },
+    { icon: FiHome, label: 'الأقسام', href: '/departments' },
     { icon: FiUser, label: 'المحامون', href: '/lawyers' },
     { icon: FiShield, label: 'الإداريين', href: '/admins' },
     ...(user?.role === 'admin' ? [
