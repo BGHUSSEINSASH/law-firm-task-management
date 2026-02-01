@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { tasksAPI, departmentsAPI, lawyersAPI, clientsAPI } from '../api';
-import { FiUsers, FiFileText, FiBriefcase, FiTrendingUp, FiClock, FiCheckCircle, FiAlertCircle, FiActivity, FiBarChart3 } from 'react-icons/fi';
+import { FiUsers, FiFileText, FiBriefcase, FiTrendingUp, FiClock, FiCheckCircle, FiAlertCircle, FiActivity, FiBarChart2 } from 'react-icons/fi';
 
 export const DashboardPage = () => {
   const [stats, setStats] = useState({
@@ -194,7 +194,7 @@ export const DashboardPage = () => {
         <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 shadow-xl">
           <div className="flex items-center gap-3 mb-8">
             <div className="p-3 bg-green-500/20 rounded-xl">
-              <FiBarChart3 className="text-2xl text-green-400" />
+              <FiBarChart2 className="text-2xl text-green-400" />
             </div>
             <h3 className="text-2xl font-bold text-white">معدل الإنجاز</h3>
           </div>
@@ -447,7 +447,7 @@ export const DashboardPage = () => {
         <div className="bg-gradient-to-br from-slate-800/80 to-slate-700/80 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 shadow-xl">
           <div className="flex items-center gap-3 mb-8">
             <div className="p-3 bg-green-500/20 rounded-xl">
-              <FiBarChart3 className="text-2xl text-green-400" />
+              <FiBarChart2 className="text-2xl text-green-400" />
             </div>
             <h3 className="text-2xl font-bold text-white">معدل الإنجاز</h3>
           </div>
