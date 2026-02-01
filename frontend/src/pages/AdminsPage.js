@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { tasksAPI, lawyersAPI } from '../api';
+import { tasksAPI, lawyersAPI, departmentsAPI } from '../api';
 import toast from 'react-hot-toast';
-import { FiUsers, FiCheckCircle, FiClock, FiTrendingUp, FiAward, FiActivity } from 'react-icons/fi';
+import { FiUsers, FiCheckCircle, FiClock, FiTrendingUp, FiAward, FiActivity, FiPlus, FiX } from 'react-icons/fi';
 
 export const AdminsPage = () => {
   const { user } = useAuth();
@@ -10,6 +10,17 @@ export const AdminsPage = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'admin',
+    department_id: '',
+    phone: '',
+    specialization: ''
+  });
 
   useEffect(() => {
     fetchData();
@@ -17,9 +28,10 @@ export const AdminsPage = () => {
 
   const fetchData = async () => {
     try {
-      const [lawyersRes, tasksRes] = await Promise.all([
+      const [lawyersRes, tasksRes, depsRes] = await Promise.all([
         lawyersAPI.getAll(),
         tasksAPI.getAll({}),
+        departmentsAPI.getAll(),
       ]);
 
       // Filter only admins and department heads
@@ -32,11 +44,39 @@ export const AdminsPage = () => {
         setTasks(tasksRes);
       }
 
+      setDepartments(depsRes);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('فشل تحميل البيانات');
       setLoading(false);
+    }
+  };
+
+  const handleAddAdmin = async (e) => {
+    e.preventDefault();
+    
+    try {
+      await lawyersAPI.create({
+        ...formData,
+        department_id: formData.department_id ? parseInt(formData.department_id) : null
+      });
+      
+      toast.success('تم إضافة الإداري بنجاح');
+      setShowAddModal(false);
+      setFormData({
+        name: '',
+        email: '',
+        password: '',
+        role: 'admin',
+        department_id: '',
+        phone: '',
+        specialization: ''
+      });
+      fetchData();
+    } catch (error) {
+      console.error('Error adding admin:', error);
+      toast.error(error.response?.data?.message || 'فشل إضافة الإداري');
     }
   };
 
@@ -79,14 +119,26 @@ export const AdminsPage = () => {
     <div className="p-6" dir="rtl">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
-            <FiUsers className="w-6 h-6 text-white" />
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+              <FiUsers className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">قسم الإداريين</h1>
+              <p className="text-gray-600">إدارة ومتابعة أنشطة الإداريين ورؤساء الأقسام</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">قسم الإداريين</h1>
-            <p className="text-gray-600">إدارة ومتابعة أنشطة الإداريين ورؤساء الأقسام</p>
-          </div>
+          
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition shadow-lg hover:shadow-xl"
+            >
+              <FiPlus className="w-5 h-5" />
+              <span className="font-semibold">إضافة إداري جديد</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -367,6 +419,149 @@ export const AdminsPage = () => {
         <div className="text-center py-12 bg-white rounded-lg shadow">
           <FiUsers className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 text-lg">لا يوجد إداريين في النظام</p>
+        </div>
+      )}
+
+      {/* Add Admin Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-t-xl flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <FiPlus className="w-6 h-6" />
+                </div>
+                <h2 className="text-2xl font-bold">إضافة إداري جديد</h2>
+              </div>
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition"
+              >
+                <FiX className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddAdmin} className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    الاسم الكامل *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition"
+                    required
+                    placeholder="أدخل الاسم الكامل"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    البريد الإلكتروني *
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition"
+                    required
+                    placeholder="example@lawfirm.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    كلمة المرور *
+                  </label>
+                  <input
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition"
+                    required
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    رقم الهاتف
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition"
+                    placeholder="07XXXXXXXXX"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    الدور الوظيفي *
+                  </label>
+                  <select
+                    value={formData.role}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition"
+                    required
+                  >
+                    <option value="admin">مدير عام</option>
+                    <option value="department_head">رئيس قسم</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    القسم
+                  </label>
+                  <select
+                    value={formData.department_id}
+                    onChange={(e) => setFormData({ ...formData, department_id: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition"
+                  >
+                    <option value="">-- اختر القسم --</option>
+                    {departments.map((dept) => (
+                      <option key={dept.id} value={dept.id}>
+                        {dept.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    التخصص
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.specialization}
+                    onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition"
+                    placeholder="مثال: إدارة عامة، إدارة مالية..."
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-8">
+                <button
+                  type="submit"
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition font-semibold shadow-lg hover:shadow-xl"
+                >
+                  إضافة الإداري
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-semibold"
+                >
+                  إلغاء
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>
