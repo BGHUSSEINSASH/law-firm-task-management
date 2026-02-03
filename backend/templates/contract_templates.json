@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "قالب عقد خدمات قانونية",
+    "content": "هذا عقد بين {{client_name}} و {{law_firm_name}} بتاريخ {{date}} بشأن {{subject}}."
+  },
+  {
+    "id": 2,
+    "name": "قالب مذكرة قانونية",
+    "content": "مذكرة قانونية بخصوص {{subject}} مقدمة من {{law_firm_name}} لصالح {{client_name}} بتاريخ {{date}}."
+  }
+]

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { inMemoryDB } = require('../inMemoryDB');
 const { authMiddleware } = require('../middleware/auth');
+const { sendEmail, sendWhatsapp } = require('../services/notificationService');
 
 // Get all notifications for current user
 router.get('/', authMiddleware, async (req, res) => {
@@ -179,6 +180,22 @@ router.post('/create', authMiddleware, async (req, res) => {
 
     inMemoryDB.notifications.set(newNotification.id, newNotification);
 
+    try {
+      const user = inMemoryDB.users.get(user_id);
+      if (user?.email) {
+        await sendEmail({
+          to: user.email,
+          subject: title || 'إشعار جديد',
+          text: message
+        });
+      }
+      if (user?.phone) {
+        await sendWhatsapp({ to: user.phone, message });
+      }
+    } catch (notifyError) {
+      // Ignore notification failures
+    }
+
     res.json({
       success: true,
       message: 'تم إنشاء الإشعار',
@@ -206,6 +223,21 @@ function createNotification(user_id, type, title, message, priority = 'medium', 
   };
 
   inMemoryDB.notifications.set(newNotification.id, newNotification);
+  try {
+    const user = inMemoryDB.users.get(user_id);
+    if (user?.email) {
+      sendEmail({
+        to: user.email,
+        subject: title || 'إشعار جديد',
+        text: message
+      });
+    }
+    if (user?.phone) {
+      sendWhatsapp({ to: user.phone, message });
+    }
+  } catch (notifyError) {
+    // Ignore notification failures
+  }
   return newNotification;
 }
 

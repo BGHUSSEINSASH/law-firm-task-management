@@ -5,11 +5,19 @@ const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
 const { ipAllowlist } = require('./middleware/ipAllowlist');
+const { auditTrail } = require('./middleware/auditTrail');
+const { startSlaScheduler } = require('./services/sla');
+const { t } = require('./i18n/messages');
 require('dotenv').config();
 
 const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
+
+app.use((req, res, next) => {
+  req.t = (key) => t(req, key);
+  next();
+});
 
 const isProduction = process.env.NODE_ENV === 'production';
 const useCookies = process.env.USE_COOKIES === 'true';
@@ -65,6 +73,7 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ limit: '1mb', extended: true }));
 app.use('/api', apiLimiter);
 app.use('/api', ipAllowlist);
+app.use('/api', auditTrail);
 
 if (useCookies) {
   app.use(cookieParser());
@@ -77,6 +86,19 @@ if (useCookies) {
 // Test route
 app.get('/test', (req, res) => {
   res.json({ success: true, message: 'Server is working!' });
+});
+
+// Health/Status route
+app.get('/api/health', (req, res) => {
+  res.json({
+    success: true,
+    status: 'ok',
+    message: req.t('HEALTH_OK'),
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    memory: process.memoryUsage()
+  });
 });
 
 // Routes
@@ -94,6 +116,9 @@ try {
   app.use('/api/notifications', require('./routes/notifications'));
   app.use('/api/invoices', require('./routes/invoices'));
   app.use('/api/security', require('./routes/security'));
+  app.use('/api/search', require('./routes/search'));
+  app.use('/api/reports', require('./routes/reports'));
+  app.use('/api/templates', require('./routes/templates'));
 } catch (error) {
   console.error('Error loading routes:', error);
 }
@@ -117,6 +142,7 @@ const server = app.listen(PORT, () => {
   console.log(`✓ Server is running on port ${PORT}`);
   console.log(`✓ Test: http://localhost:${PORT}/test`);
   console.log(`✓ Login: http://localhost:${PORT}/api/auth/login`);
+  startSlaScheduler();
 });
 
 // Handle server errors

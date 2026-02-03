@@ -84,6 +84,8 @@ router.post('/', authMiddleware, authorizePermission('tasks:create'), async (req
       created_at: new Date(),
       due_date: due_date || null,
       completed_at: null,
+      archived_at: null,
+      escalated_at: null,
       ...buildApprovalFields(req.user.id)
     };
 
@@ -104,8 +106,12 @@ router.post('/', authMiddleware, authorizePermission('tasks:create'), async (req
 // Get all tasks
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const { status, department_id, assigned_to } = req.query;
+    const { status, department_id, assigned_to, q, includeArchived } = req.query;
     let tasks = Array.from(inMemoryDB.tasks.values());
+
+    if (!includeArchived || includeArchived === 'false') {
+      tasks = tasks.filter(t => !t.archived_at);
+    }
 
     if (status) {
       tasks = tasks.filter(t => t.status === status);
@@ -117,6 +123,15 @@ router.get('/', authMiddleware, async (req, res) => {
 
     if (assigned_to) {
       tasks = tasks.filter(t => t.assigned_to === parseInt(assigned_to));
+    }
+
+    if (q) {
+      const query = q.toLowerCase();
+      tasks = tasks.filter(t =>
+        t.title?.toLowerCase().includes(query) ||
+        t.description?.toLowerCase().includes(query) ||
+        t.task_code?.toLowerCase().includes(query)
+      );
     }
 
     res.json({
@@ -145,6 +160,46 @@ router.get('/:id', authMiddleware, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Failed to fetch task' });
+  }
+});
+
+// Archive task
+router.post('/:id/archive', authMiddleware, async (req, res) => {
+  try {
+    const taskId = parseInt(req.params.id);
+
+    if (!inMemoryDB.tasks.has(taskId)) {
+      return res.status(404).json({ success: false, message: 'Task not found' });
+    }
+
+    const task = inMemoryDB.tasks.get(taskId);
+    task.archived_at = new Date().toISOString();
+    inMemoryDB.tasks.set(taskId, task);
+
+    res.json({ success: true, message: 'تمت الأرشفة', task });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to archive task' });
+  }
+});
+
+// Unarchive task
+router.post('/:id/unarchive', authMiddleware, async (req, res) => {
+  try {
+    const taskId = parseInt(req.params.id);
+
+    if (!inMemoryDB.tasks.has(taskId)) {
+      return res.status(404).json({ success: false, message: 'Task not found' });
+    }
+
+    const task = inMemoryDB.tasks.get(taskId);
+    task.archived_at = null;
+    inMemoryDB.tasks.set(taskId, task);
+
+    res.json({ success: true, message: 'تم إلغاء الأرشفة', task });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to unarchive task' });
   }
 });
 
