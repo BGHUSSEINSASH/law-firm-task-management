@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
+const csrf = require('csurf');
 require('dotenv').config();
 
 const app = express();
@@ -9,6 +11,7 @@ app.disable('x-powered-by');
 app.set('trust proxy', 1);
 
 const isProduction = process.env.NODE_ENV === 'production';
+const useCookies = process.env.USE_COOKIES === 'true';
 const allowAllCors = process.env.CORS_ALLOW_ALL === 'true';
 const allowedOrigins = (process.env.CORS_ORIGIN || '')
   .split(',')
@@ -61,6 +64,14 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ limit: '1mb', extended: true }));
 app.use('/api', apiLimiter);
 
+if (useCookies) {
+  app.use(cookieParser());
+  app.use(csrf({ cookie: true }));
+  app.get('/api/auth/csrf', (req, res) => {
+    res.json({ success: true, csrfToken: req.csrfToken() });
+  });
+}
+
 // Test route
 app.get('/test', (req, res) => {
   res.json({ success: true, message: 'Server is working!' });
@@ -80,6 +91,7 @@ try {
   app.use('/api/analytics', require('./routes/analytics'));
   app.use('/api/notifications', require('./routes/notifications'));
   app.use('/api/invoices', require('./routes/invoices'));
+  app.use('/api/security', require('./routes/security'));
 } catch (error) {
   console.error('Error loading routes:', error);
 }

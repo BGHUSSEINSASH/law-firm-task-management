@@ -12,6 +12,7 @@ const inMemoryDB = {
   notifications: new Map(),  // الإشعارات
   invoices: new Map(),  // الفواتير
   files: new Map(),  // الملفات
+  refresh_tokens: new Map(),
   statistics: {}
 };
 
@@ -31,6 +32,11 @@ async function initializeData() {
     full_name: 'مدير النظام',
     role: 'admin',
     department_id: null,
+    failed_login_attempts: 0,
+    lock_until: null,
+    last_login_at: null,
+    password_changed_at: new Date(),
+    known_devices: [],
     created_at: new Date()
   });
   
@@ -42,6 +48,11 @@ async function initializeData() {
     full_name: 'محام رئيسي',
     role: 'lawyer',
     department_id: 1,
+    failed_login_attempts: 0,
+    lock_until: null,
+    last_login_at: null,
+    password_changed_at: new Date(),
+    known_devices: [],
     created_at: new Date()
   });
   
@@ -53,6 +64,11 @@ async function initializeData() {
     full_name: 'رئيس قسم العقود',
     role: 'department_head',
     department_id: 1,
+    failed_login_attempts: 0,
+    lock_until: null,
+    last_login_at: null,
+    password_changed_at: new Date(),
+    known_devices: [],
     created_at: new Date()
   });
   
@@ -64,6 +80,11 @@ async function initializeData() {
     full_name: 'محام ثاني',
     role: 'lawyer',
     department_id: 2,
+    failed_login_attempts: 0,
+    lock_until: null,
+    last_login_at: null,
+    password_changed_at: new Date(),
+    known_devices: [],
     created_at: new Date()
   });
   
@@ -75,6 +96,11 @@ async function initializeData() {
     full_name: 'مساعد إداري',
     role: 'assistant',
     department_id: 1,
+    failed_login_attempts: 0,
+    lock_until: null,
+    last_login_at: null,
+    password_changed_at: new Date(),
+    known_devices: [],
     created_at: new Date()
   });
 

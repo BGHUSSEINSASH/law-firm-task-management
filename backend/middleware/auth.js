@@ -16,6 +16,9 @@ const authMiddleware = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, jwtSecret || 'your-secret-key');
+    if (decoded.type && decoded.type !== 'access') {
+      return res.status(401).json({ success: false, message: 'Invalid token type' });
+    }
     req.user = decoded;
     next();
   } catch (err) {
