@@ -1,16 +1,65 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
+app.disable('x-powered-by');
+app.set('trust proxy', 1);
+
+const isProduction = process.env.NODE_ENV === 'production';
+const allowAllCors = process.env.CORS_ALLOW_ALL === 'true';
+const allowedOrigins = (process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const defaultOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'https://law-firm07506050.web.app'
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowAllCors || !isProduction) {
+      return callback(null, true);
+    }
+
+    const allowList = [...defaultOrigins, ...allowedOrigins];
+    if (allowList.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+};
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: isProduction ? 300 : 1000,
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+const authLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: isProduction ? 20 : 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'محاولات كثيرة، حاول لاحقاً' }
+});
 
 // Middleware
-app.use(cors({
-  origin: '*',
-  credentials: true
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
 }));
-app.use(express.json());
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(cors(corsOptions));
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ limit: '1mb', extended: true }));
+app.use('/api', apiLimiter);
 
 // Test route
 app.get('/test', (req, res) => {
@@ -19,7 +68,7 @@ app.get('/test', (req, res) => {
 
 // Routes
 try {
-  app.use('/api/auth', require('./routes/auth'));
+  app.use('/api/auth', authLimiter, require('./routes/auth'));
   app.use('/api/tasks', require('./routes/tasks'));
   app.use('/api/files', require('./routes/files'));
   app.use('/api/departments', require('./routes/departments'));
@@ -37,8 +86,12 @@ try {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
+  const statusCode = err.message === 'Not allowed by CORS'
+    ? 403
+    : (err.status || 500);
+
   console.error('Error:', err);
-  res.status(err.status || 500).json({
+  res.status(statusCode).json({
     success: false,
     message: err.message || 'Internal Server Error',
     error: process.env.NODE_ENV === 'development' ? err.stack : {}
