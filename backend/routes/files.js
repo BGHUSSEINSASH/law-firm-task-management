@@ -4,6 +4,9 @@ const path = require('path');
 const fs = require('fs');
 const { authMiddleware } = require('../middleware/auth');
 const { inMemoryDB } = require('../inMemoryDB');
+const { verifyHmac } = require('../middleware/hmac');
+const crypto = require('crypto');
+const { execFileSync } = require('child_process');
 
 const router = express.Router();
 
@@ -40,6 +43,12 @@ const storage = multer.diskStorage({
 
 // File validation
 const fileFilter = (req, file, cb) => {
+  const blockedExtensions = ['.exe', '.dll', '.js', '.bat', '.cmd', '.ps1', '.sh', '.msi', '.apk'];
+  const extension = path.extname(file.originalname || '').toLowerCase();
+  if (blockedExtensions.includes(extension)) {
+    return cb(new Error('نوع الملف غير مسموح لأسباب أمنية'));
+  }
+
   // Allowed file types
   const allowedMimes = {
     image: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
@@ -96,7 +105,7 @@ const roleFileRequirements = {
 };
 
 // Upload file for a task
-router.post('/:taskId/upload', authMiddleware, upload.array('files', 20), async (req, res) => {
+router.post('/:taskId/upload', authMiddleware, verifyHmac, upload.array('files', 20), async (req, res) => {
   try {
     const taskId = parseInt(req.params.taskId);
     const task = inMemoryDB.tasks.get(taskId);
@@ -136,6 +145,17 @@ router.post('/:taskId/upload', authMiddleware, upload.array('files', 20), async 
 
     // Add uploaded files to task
     const uploadedFiles = req.files.map(file => {
+      const checksum = crypto.createHash('sha256').update(fs.readFileSync(file.path)).digest('hex');
+
+      if (process.env.ENABLE_AV_SCAN === 'true' && process.env.CLAMAV_PATH) {
+        try {
+          execFileSync(process.env.CLAMAV_PATH, ['--no-summary', file.path]);
+        } catch (scanError) {
+          fs.unlinkSync(file.path);
+          throw new Error('فشل فحص الملف (قد يكون ضاراً)');
+        }
+      }
+
       const fileObj = {
         id: Math.random().toString(36).substr(2, 9),
         filename: file.originalname,
@@ -143,6 +163,7 @@ router.post('/:taskId/upload', authMiddleware, upload.array('files', 20), async 
         filepath: file.path,
         mimetype: file.mimetype,
         size: file.size,
+        checksum,
         uploadedBy: req.user.id,
         uploadedByName: req.user.full_name,
         uploadedAt: new Date(),

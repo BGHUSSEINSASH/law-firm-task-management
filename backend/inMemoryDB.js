@@ -13,6 +13,7 @@ const inMemoryDB = {
   invoices: new Map(),  // الفواتير
   files: new Map(),  // الملفات
   refresh_tokens: new Map(),
+  login_attempts: new Map(),
   statistics: {}
 };
 

@@ -1,5 +1,6 @@
 const express = require('express');
 const { authMiddleware } = require('../middleware/auth');
+const { authorizePermission } = require('../middleware/permissions');
 const { inMemoryDB } = require('../inMemoryDB');
 
 const router = express.Router();
@@ -42,16 +43,8 @@ const buildApprovalFields = (createdBy) => ({
 });
 
 // Create task - صلاحية الإنشاء: الإداريون والمديرون فقط
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware, authorizePermission('tasks:create'), async (req, res) => {
   try {
-    // التحقق من الصلاحيات: فقط الإداريون ومديرو الأقسام
-    if (!['admin', 'department_head'].includes(req.user.role)) {
-      return res.status(403).json({ 
-        success: false, 
-        message: 'غير مصرح - فقط الإداريون ومديرو الأقسام يمكنهم إنشاء المهام' 
-      });
-    }
-
     const { title, description, department_id, assigned_to, main_lawyer_id, priority, client_id, due_date } = req.body;
 
     if (!title || !department_id || !client_id) {

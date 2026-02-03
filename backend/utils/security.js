@@ -1,4 +1,6 @@
 const crypto = require('crypto');
+const fs = require('fs');
+const https = require('https');
 
 const getClientIp = (req) => {
   const forwarded = req.headers['x-forwarded-for'];
@@ -74,6 +76,33 @@ const logSecurityEvent = (inMemoryDB, payload) => {
     ...payload
   };
   inMemoryDB.activity_logs.set(id, entry);
+
+  if (process.env.SECURITY_LOG_TO_FILE === 'true') {
+    try {
+      const line = JSON.stringify(entry) + '\n';
+      fs.appendFileSync('security.log', line, { encoding: 'utf8' });
+    } catch (err) {
+      // ignore file logging errors
+    }
+  }
+
+  if (process.env.SECURITY_WEBHOOK_URL) {
+    try {
+      const url = new URL(process.env.SECURITY_WEBHOOK_URL);
+      const req = https.request({
+        hostname: url.hostname,
+        path: url.pathname + url.search,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      req.on('error', () => {});
+      req.write(JSON.stringify(entry));
+      req.end();
+    } catch (err) {
+      // ignore webhook errors
+    }
+  }
+
   return entry;
 };
 
