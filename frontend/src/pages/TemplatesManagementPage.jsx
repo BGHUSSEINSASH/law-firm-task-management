@@ -305,7 +305,7 @@ const TemplateModal = ({ template, formData, setFormData, onSave, onCancel }) =>
 
         <div>
           <label className="text-sm font-medium text-slate-300 block mb-2">
-            المحتوى (استخدم {{'{variable}'}} للمتغيرات)
+            المحتوى (استخدم {'{variable}'} للمتغيرات)
           </label>
           <textarea
             value={formData.content}
