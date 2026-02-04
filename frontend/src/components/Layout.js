@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useI18n } from '../contexts/I18nContext';
 import { FiLogOut, FiMenu, FiX, FiHome, FiCheckSquare, FiBell, FiBarChart2, FiFileText, FiBriefcase, FiMapPin, FiUser, FiUsers, FiActivity, FiGrid, FiCreditCard, FiShield, FiLock } from 'react-icons/fi';
 import NotificationsCenter from './NotificationsCenter';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export const Layout = ({ children }) => {
   const { user, logout } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -15,21 +18,25 @@ export const Layout = ({ children }) => {
   };
 
   const navItems = [
-    { icon: FiHome, label: 'لوحة التحكم', href: '/dashboard' },
-    { icon: FiCheckSquare, label: 'المهام', href: '/tasks' },
-    { icon: FiGrid, label: 'Kanban', href: '/tasks-kanban' },
-    { icon: FiBell, label: 'الإشعارات', href: '/notifications' },
-    { icon: FiBarChart2, label: 'التقارير', href: '/reports' },
-    { icon: FiCreditCard, label: 'الفواتير', href: '/invoices' },
-    { icon: FiActivity, label: 'سجل النشاطات', href: '/activity-log' },
-    { icon: FiBriefcase, label: 'العملاء', href: '/clients' },
-    { icon: FiMapPin, label: 'المراحل', href: '/stages' },
-    { icon: FiHome, label: 'الأقسام', href: '/departments' },
-    { icon: FiUser, label: 'المحامون', href: '/lawyers' },
-    { icon: FiShield, label: 'الإداريين', href: '/admins' },
+    { icon: FiHome, label: t('nav.dashboard'), href: '/dashboard' },
+    { icon: FiCheckSquare, label: t('nav.tasks'), href: '/tasks' },
+    { icon: FiGrid, label: t('nav.tasksKanban'), href: '/tasks-kanban' },
+    { icon: FiBell, label: t('nav.notifications'), href: '/notifications' },
+    { icon: FiBarChart2, label: t('nav.reports'), href: '/reports' },
+    { icon: FiCreditCard, label: t('nav.invoices'), href: '/invoices' },
+    { icon: FiActivity, label: t('nav.activityLog'), href: '/activity-log' },
+    { icon: FiBriefcase, label: t('nav.clients'), href: '/clients' },
+    { icon: FiMapPin, label: t('nav.stages'), href: '/stages' },
+    { icon: FiHome, label: t('nav.departments'), href: '/departments' },
+    { icon: FiUser, label: t('nav.lawyers'), href: '/lawyers' },
+    { icon: FiShield, label: t('nav.admins'), href: '/admins' },
+    // New Feature Links
+    { icon: FiBarChart2, label: 'البحث المتقدم', href: '/search' },
+    { icon: FiFileText, label: 'القوالب', href: '/templates' },
+    { icon: FiLock, label: 'الجلسات', href: '/sessions' },
     ...(user?.role === 'admin' ? [
-      { icon: FiUsers, label: 'المستخدمون', href: '/users' },
-      { icon: FiLock, label: 'إدارة النظام', href: '/admin-management' }
+      { icon: FiUsers, label: t('nav.users'), href: '/users' },
+      { icon: FiLock, label: t('nav.settings'), href: '/admin-management' }
     ] : []),
   ];
 
@@ -84,7 +91,7 @@ export const Layout = ({ children }) => {
                 className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 justify-center transition duration-300 font-semibold shadow-lg shadow-red-500/30"
               >
                 <FiLogOut size={18} />
-                خروج
+                {t('nav.logout')}
               </button>
             </div>
           ) : (
@@ -102,8 +109,9 @@ export const Layout = ({ children }) => {
       <main className="flex-1 overflow-auto flex flex-col">
         {/* Top Bar */}
         <div className="bg-gradient-to-r from-slate-800/80 to-slate-700/80 backdrop-blur-xl border-b border-slate-700/50 px-8 py-4 flex items-center justify-between sticky top-0 z-40 shadow-lg">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">نظام إدارة المهام القانونية</h2>
-          <div className="flex items-center gap-6">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">{t('dashboard.title')}</h2>
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <NotificationsCenter />
             <div className="w-px h-6 bg-slate-600"></div>
             <div className="text-right">

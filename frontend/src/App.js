@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
+import { I18nProvider } from './contexts/I18nContext';
 import { PrivateRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 import { LoginPage } from './pages/LoginPage';
@@ -20,49 +21,59 @@ import ReportsPageNew from './pages/ReportsPageNew';
 import InvoicesPage from './pages/InvoicesPage';
 import AdminsPage from './pages/AdminsPage';
 import AdminManagementPage from './pages/AdminManagementPage';
+import DashboardPageAdvanced from './pages/DashboardPageAdvanced';
+import AdvancedSearchPage from './pages/AdvancedSearchPage';
+import SessionManagementPage from './pages/SessionManagementPage';
+import PDFReportsPage from './pages/PDFReportsPage';
+import TemplatesManagementPage from './pages/TemplatesManagementPage';
 import './index.css';
 
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Toaster position="top-right" />
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/login" element={<LoginPage />} />
+      <I18nProvider>
+        <AuthProvider>
+          <Toaster position="top-right" />
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<LoginPage />} />
 
-          {/* Protected Routes */}
-          <Route
-            path="/*"
-            element={
-              <PrivateRoute>
-                <Layout>
+            {/* Protected Routes */}
+            <Route
+              path="/*"
+              element={
+                <PrivateRoute>
+                  <Layout>
                   <Routes>
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/tasks" element={<TasksPage />} />
-                    <Route path="/tasks/:id" element={<TaskDetailsPage />} />
-                    <Route path="/tasks-kanban" element={<TasksKanbanPage />} />
-                    <Route path="/stages" element={<StagesPage />} />
-                    <Route path="/notifications" element={<NotificationsPage />} />
-                    <Route path="/activity-log" element={<ActivityLogPage />} />
-                    <Route path="/reports" element={<ReportsPageNew />} />
-                    <Route path="/invoices" element={<InvoicesPage />} />
-                    <Route path="/users" element={<UsersPage />} />
-                    <Route path="/departments" element={<DepartmentsPage />} />
-                    <Route path="/lawyers" element={<LawyersPage />} />
-                    <Route path="/clients" element={<ClientsPage />} />
-                    <Route path="/admins" element={<AdminsPage />} />
-                    <Route path="/admin-management" element={<AdminManagementPage />} />
-                  </Routes>
-                </Layout>
-              </PrivateRoute>
-            }
-          />
+                      <Route path="/dashboard" element={<DashboardPageAdvanced />} />
+                      <Route path="/tasks" element={<TasksPage />} />
+                      <Route path="/tasks/:id" element={<TaskDetailsPage />} />
+                      <Route path="/tasks-kanban" element={<TasksKanbanPage />} />
+                      <Route path="/stages" element={<StagesPage />} />
+                      <Route path="/notifications" element={<NotificationsPage />} />
+                      <Route path="/activity-log" element={<ActivityLogPage />} />
+                      <Route path="/reports" element={<PDFReportsPage />} />
+                      <Route path="/invoices" element={<InvoicesPage />} />
+                      <Route path="/search" element={<AdvancedSearchPage />} />
+                      <Route path="/sessions" element={<SessionManagementPage />} />
+                      <Route path="/templates" element={<TemplatesManagementPage />} />
+                      <Route path="/users" element={<UsersPage />} />
+                      <Route path="/departments" element={<DepartmentsPage />} />
+                      <Route path="/lawyers" element={<LawyersPage />} />
+                      <Route path="/clients" element={<ClientsPage />} />
+                      <Route path="/admins" element={<AdminsPage />} />
+                      <Route path="/admin-management" element={<AdminManagementPage />} />
+                    </Routes>
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
 
-          {/* Fallback */}
-          <Route path="/" element={<PrivateRoute><Layout><DashboardPage /></Layout></PrivateRoute>} />
-        </Routes>
-      </AuthProvider>
+            {/* Fallback */}
+            <Route path="/" element={<PrivateRoute><Layout><DashboardPage /></Layout></PrivateRoute>} />
+          </Routes>
+        </AuthProvider>
+      </I18nProvider>
     </BrowserRouter>
   );
 }
