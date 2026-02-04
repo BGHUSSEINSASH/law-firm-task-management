@@ -161,17 +161,19 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Configure AWS credentials
+        if: success()
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+          aws-region: us-east-1
       
       - name: Update ECS service
+        if: success()
         run: |
           aws ecs update-service \
-            --cluster ${{ secrets.ECS_CLUSTER_NAME || 'law-firm-cluster' }} \
-            --service ${{ secrets.ECS_SERVICE_NAME || 'law-firm-backend' }} \
+            --cluster law-firm-cluster \
+            --service law-firm-backend \
             --force-new-deployment
 
   deploy-gcp-cloud-run:
@@ -183,6 +185,7 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Authenticate to Google Cloud
+        if: success()
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
@@ -191,21 +194,22 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
       
       - name: Deploy backend to Cloud Run
+        if: success()
         run: |
           gcloud run deploy law-firm-backend \
             --source . \
-            --project ${{ secrets.GCP_PROJECT_ID }} \
-            --region ${{ secrets.GCP_REGION || 'us-central1' }} \
+            --project law-firm-project \
+            --region us-central1 \
             --allow-unauthenticated \
-            --update-env-vars NODE_ENV=production \
-            --set-cloudsql-instances ${{ secrets.CLOUDSQL_INSTANCE }}
+            --update-env-vars NODE_ENV=production
       
       - name: Deploy frontend to Cloud Run
+        if: success()
         run: |
           gcloud run deploy law-firm-frontend \
             --source . \
-            --project ${{ secrets.GCP_PROJECT_ID }} \
-            --region ${{ secrets.GCP_REGION || 'us-central1' }} \
+            --project law-firm-project \
+            --region us-central1 \
             --allow-unauthenticated
 
   security-scan:
