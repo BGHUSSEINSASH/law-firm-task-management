@@ -116,6 +116,9 @@ try {
   app.use('/api/stages', require('./routes/stages'));
   app.use('/api/analytics', require('./routes/analytics'));
   app.use('/api/notifications', require('./routes/notifications'));
+  app.use('/api/notifications', require('./routes/pushNotifications'));
+  app.use('/api/biometric', require('./routes/biometric'));
+  app.use('/api/oauth', require('./routes/oauth'));
   app.use('/api/invoices', require('./routes/invoices'));
   app.use('/api/security', require('./routes/security'));
   app.use('/api/search', require('./routes/search'));
