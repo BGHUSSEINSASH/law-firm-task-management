@@ -7,6 +7,7 @@ const csrf = require('csurf');
 const { ipAllowlist } = require('./middleware/ipAllowlist');
 const { auditTrail } = require('./middleware/auditTrail');
 const { startSlaScheduler } = require('./services/sla');
+const cacheService = require('./services/cacheService');
 const { t } = require('./i18n/messages');
 require('dotenv').config();
 
@@ -104,6 +105,7 @@ app.get('/api/health', (req, res) => {
 // Routes
 try {
   app.use('/api/auth', authLimiter, require('./routes/auth'));
+  app.use('/api/2fa', require('./routes/twoFactor'));
   app.use('/api/tasks', require('./routes/tasks'));
   app.use('/api/files', require('./routes/files'));
   app.use('/api/departments', require('./routes/departments'));
@@ -119,6 +121,8 @@ try {
   app.use('/api/search', require('./routes/search'));
   app.use('/api/reports', require('./routes/reports'));
   app.use('/api/templates', require('./routes/templates'));
+  app.use('/api/comments', require('./routes/comments'));
+  app.use('/api/time-tracking', require('./routes/timeTracking'));
 } catch (error) {
   console.error('Error loading routes:', error);
 }
@@ -138,10 +142,14 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
   console.log(`✓ Server is running on port ${PORT}`);
   console.log(`✓ Test: http://localhost:${PORT}/test`);
   console.log(`✓ Login: http://localhost:${PORT}/api/auth/login`);
+  
+  // Initialize cache service
+  await cacheService.initialize();
+  
   startSlaScheduler();
 });
 

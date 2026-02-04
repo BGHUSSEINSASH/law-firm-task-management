@@ -96,6 +96,45 @@ export const translations = {
       sessionExpired: 'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى',
     },
 
+    // 2FA
+    twoFA: {
+      title: 'المصادقة الثنائية',
+      enable: 'تفعيل المصادقة الثنائية',
+      disable: 'تعطيل المصادقة الثنائية',
+      setupQR: 'مسح رمز الاستجابة السريعة',
+      scanCode: 'امسح الرمز باستخدام تطبيق المصادقة',
+      enterOTP: 'أدخل الرمز المكون من 6 أرقام',
+      backupCodes: 'الرموز الاحتياطية',
+      saveBackupCodes: 'احفظ هذه الرموز في مكان آمن',
+      downloadBackupCodes: 'تحميل الرموز الاحتياطية',
+      setupSuccess: 'تم تفعيل المصادقة الثنائية بنجاح',
+    },
+
+    // Comments
+    comments: {
+      title: 'التعليقات',
+      addComment: 'أضف تعليقاً',
+      noComments: 'لا توجد تعليقات',
+      mentionUser: 'اذكر مستخدماً',
+      deleteComment: 'حذف التعليق',
+      like: 'إعجاب',
+    },
+
+    // Time Tracking
+    timeTracking: {
+      title: 'تتبع الوقت',
+      start: 'ابدأ',
+      stop: 'إيقاف',
+      pause: 'إيقاف مؤقت',
+      resume: 'استئناف',
+      totalHours: 'إجمالي الساعات',
+      today: 'اليوم',
+      thisWeek: 'هذا الأسبوع',
+      thisMonth: 'هذا الشهر',
+      timeLogs: 'سجلات الوقت',
+      generateReport: 'إنشاء تقرير',
+    },
+
     // Dashboard
     dashboard: {
       title: 'لوحة التحكم',
@@ -338,6 +377,45 @@ export const translations = {
       invalidEmail: 'Invalid email address',
       passwordMismatch: 'Passwords do not match',
       sessionExpired: 'Your session has expired. Please login again',
+    },
+
+    // 2FA
+    twoFA: {
+      title: 'Two-Factor Authentication',
+      enable: 'Enable 2FA',
+      disable: 'Disable 2FA',
+      setupQR: 'Scan QR Code',
+      scanCode: 'Scan the code using an authenticator app',
+      enterOTP: 'Enter 6-digit code',
+      backupCodes: 'Backup Codes',
+      saveBackupCodes: 'Save these codes in a secure place',
+      downloadBackupCodes: 'Download Backup Codes',
+      setupSuccess: '2FA enabled successfully',
+    },
+
+    // Comments
+    comments: {
+      title: 'Comments',
+      addComment: 'Add a comment',
+      noComments: 'No comments yet',
+      mentionUser: 'Mention a user',
+      deleteComment: 'Delete comment',
+      like: 'Like',
+    },
+
+    // Time Tracking
+    timeTracking: {
+      title: 'Time Tracking',
+      start: 'Start',
+      stop: 'Stop',
+      pause: 'Pause',
+      resume: 'Resume',
+      totalHours: 'Total Hours',
+      today: 'Today',
+      thisWeek: 'This Week',
+      thisMonth: 'This Month',
+      timeLogs: 'Time Logs',
+      generateReport: 'Generate Report',
     },
 
     // Dashboard
