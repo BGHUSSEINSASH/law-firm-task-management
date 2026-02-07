@@ -22,12 +22,11 @@ export const DepartmentsPage = () => {
         tasksAPI.getAll({})
       ]);
       
-      setDepartments(deptRes);
-      if (tasksRes.tasks) {
-        setTasks(tasksRes.tasks);
-      } else if (Array.isArray(tasksRes)) {
-        setTasks(tasksRes);
-      }
+      const departmentsData = deptRes?.data?.departments || deptRes?.departments || [];
+      setDepartments(Array.isArray(departmentsData) ? departmentsData : []);
+
+      const tasksData = tasksRes?.data?.tasks || tasksRes?.tasks || tasksRes || [];
+      setTasks(Array.isArray(tasksData) ? tasksData : []);
       setLoading(false);
     } catch (error) {
       console.error('Error:', error);
@@ -94,7 +93,7 @@ export const DepartmentsPage = () => {
   };
 
   const filteredDepartments = departments.filter(d =>
-    d.name.toLowerCase().includes(searchTerm.toLowerCase())
+    (d.name || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
