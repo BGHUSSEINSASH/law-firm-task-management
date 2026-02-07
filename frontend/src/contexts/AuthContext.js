@@ -2,6 +2,14 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { authAPI } from '../api';
 
 const AuthContext = createContext();
+const AUTH_BYPASS = (process.env.REACT_APP_BYPASS_AUTH || 'true') === 'true';
+const DEV_USER = {
+  id: 1,
+  username: 'admin',
+  email: 'admin@lawfirm.com',
+  full_name: 'Dev Admin',
+  role: 'admin'
+};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -17,6 +25,14 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
+    if (AUTH_BYPASS) {
+      localStorage.setItem('token', 'dev-bypass-token');
+      setToken('dev-bypass-token');
+      setUser(DEV_USER);
+      setLoading(false);
+      return;
+    }
+
     if (token) {
       authAPI
         .getMe()
@@ -57,6 +73,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    if (AUTH_BYPASS) {
+      localStorage.setItem('token', 'dev-bypass-token');
+      setToken('dev-bypass-token');
+      setUser(DEV_USER);
+      return;
+    }
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);

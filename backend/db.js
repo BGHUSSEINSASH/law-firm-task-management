@@ -9,7 +9,11 @@ const getPool = () => {
   if (!pool) {
     pool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: process.env.PG_SSL === 'true' ? { rejectUnauthorized: false } : false
+      ssl: process.env.PG_SSL === 'true'
+        ? { rejectUnauthorized: false }
+        : (process.env.DATABASE_URL?.includes('sslmode=require')
+          ? { rejectUnauthorized: false }
+          : false)
     });
   }
   return pool;

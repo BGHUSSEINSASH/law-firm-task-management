@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useI18n } from '../contexts/I18nContext';
 import { useAuth } from '../contexts/AuthContext';
-import { FiTrendingUp, FiCheckCircle, FiClock, FiAlertCircle, FiBarChart3 } from 'react-icons/fi';
+import { FiTrendingUp, FiCheckCircle, FiClock, FiAlertCircle, FiBarChart2 } from 'react-icons/fi';
 import API from '../api';
 import toast from 'react-hot-toast';
 
@@ -121,7 +121,7 @@ export const DashboardPage = () => {
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
-          icon={FiBarChart3}
+          icon={FiBarChart2}
           title={t('dashboard.totalTasks')}
           value={stats.totalTasks}
           color="from-blue-600 to-blue-700"

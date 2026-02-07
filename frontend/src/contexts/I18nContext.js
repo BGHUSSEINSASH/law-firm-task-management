@@ -1,5 +1,5 @@
 import React, { useContext, createContext, useState, useEffect } from 'react';
-import { i18n } from './i18nManager';
+import { i18n } from '../i18n/i18nManager';
 
 const I18nContext = createContext();
 

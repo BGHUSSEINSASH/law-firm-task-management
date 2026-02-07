@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/authMiddleware');
-const inMemoryDB = require('../inMemoryDB');
+const { authMiddleware } = require('../middleware/auth');
+const { inMemoryDB } = require('../inMemoryDB');
 
 // In-memory comments storage
 const comments = new Map();
@@ -68,8 +68,9 @@ router.post('/:taskId', authMiddleware, (req, res) => {
     mentions?.forEach((userId) => {
       const user = inMemoryDB.users.get(userId);
       if (user) {
-        inMemoryDB.notifications.push({
-          id: Math.random(),
+        const notificationId = Math.max(...Array.from(inMemoryDB.notifications.keys()), 0) + 1;
+        inMemoryDB.notifications.set(notificationId, {
+          id: notificationId,
           user_id: userId,
           type: 'mention',
           title: 'تم الإشارة إليك',
@@ -83,13 +84,15 @@ router.post('/:taskId', authMiddleware, (req, res) => {
     });
 
     // Activity log
-    inMemoryDB.activityLogs.push({
-      id: Math.random(),
+    const activityId = Math.max(...Array.from(inMemoryDB.activity_logs.keys()), 0) + 1;
+    inMemoryDB.activity_logs.set(activityId, {
+      id: activityId,
       user_id: req.user.id,
       action: 'comment_added',
-      entity: 'comment',
-      details: { taskId, commentId: comment.id },
-      created_at: new Date().toISOString(),
+      resource: 'comment',
+      resource_id: comment.id,
+      details: JSON.stringify({ taskId, commentId: comment.id }),
+      timestamp: new Date().toISOString(),
     });
 
     res.status(201).json({

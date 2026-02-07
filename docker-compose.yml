@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres123}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -68,10 +68,7 @@ services:
       REQUIRE_HMAC: ${REQUIRE_HMAC:-false}
       HMAC_SECRET: ${HMAC_SECRET}
     ports:
-      - "5000:5000"
-    volumes:
-      - ./backend:/app/backend
-      - /app/backend/node_modules
+      - "5001:5000"
     networks:
       - law-firm-network
     restart: unless-stopped
@@ -89,9 +86,6 @@ services:
       REACT_APP_ENV: ${REACT_APP_ENV:-production}
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/app/frontend
-      - /app/frontend/node_modules
     networks:
       - law-firm-network
     restart: unless-stopped

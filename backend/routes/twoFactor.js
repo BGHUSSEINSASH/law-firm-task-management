@@ -3,7 +3,7 @@ const router = express.Router();
 const twoFactorService = require('../services/twoFactorService');
 const notificationService = require('../services/notificationService');
 const inMemoryDB = require('../inMemoryDB');
-const authMiddleware = require('../middleware/authMiddleware');
+const { authMiddleware } = require('../middleware/auth');
 
 /**
  * GET /api/2fa/setup
