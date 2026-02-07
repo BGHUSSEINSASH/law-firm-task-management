@@ -33,7 +33,22 @@ export const AdvancedSearchPage = () => {
       if (filters.entity !== 'all') params.append('entity', filters.entity);
 
       const response = await API.get(`/api/search?${params}`);
-      let filtered = response.data || [];
+      const payload = response.data?.results || {};
+      let filtered = [];
+
+      if (Array.isArray(payload)) {
+        filtered = payload;
+      } else {
+        if (Array.isArray(payload.tasks)) {
+          filtered = filtered.concat(payload.tasks.map((item) => ({ ...item, type: 'task' })));
+        }
+        if (Array.isArray(payload.clients)) {
+          filtered = filtered.concat(payload.clients.map((item) => ({ ...item, type: 'client' })));
+        }
+        if (Array.isArray(payload.users)) {
+          filtered = filtered.concat(payload.users.map((item) => ({ ...item, type: 'user' })));
+        }
+      }
 
       // Apply additional filters
       if (filters.status) {
