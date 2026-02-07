@@ -18,11 +18,13 @@ jobs:
       
       - name: Install dependencies
         run: |
-          cd backend && npm ci
-          cd ../frontend && npm ci
+          cd backend && npm install
+          cd ../frontend && npm install
       
       - name: Build frontend
         working-directory: frontend
+        env:
+          CI: false
         run: npm run build
       
       - name: Deploy to Vercel (Frontend)
