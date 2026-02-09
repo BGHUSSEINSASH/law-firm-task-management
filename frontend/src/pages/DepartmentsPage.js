@@ -9,7 +9,6 @@ export const DepartmentsPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '' });
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
@@ -27,11 +26,9 @@ export const DepartmentsPage = () => {
 
       const tasksData = tasksRes?.data?.tasks || tasksRes?.tasks || tasksRes || [];
       setTasks(Array.isArray(tasksData) ? tasksData : []);
-      setLoading(false);
     } catch (error) {
       console.error('Error:', error);
       toast.error('فشل تحميل البيانات');
-      setLoading(false);
     }
   };
 

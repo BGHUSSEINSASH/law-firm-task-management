@@ -19,7 +19,6 @@ export const TasksPage = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
   const [filterApproval, setFilterApproval] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
 
@@ -663,11 +662,7 @@ const TaskCard = ({
   React.useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const [creatorsRes, lawyersRes] = await Promise.all([
-          lawyersAPI.getAll(),
-          lawyersAPI.getAll()
-        ]);
-        
+        const creatorsRes = await lawyersAPI.getAll();
         const allUsers = creatorsRes;
         if (task.created_by) {
           setCreator(allUsers.find(u => u.id === task.created_by));

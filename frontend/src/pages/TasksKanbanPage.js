@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FiSearch, FiGrid, FiList, FiDownload } from 'react-icons/fi';
@@ -21,10 +21,6 @@ const TasksKanbanPage = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [tasks, filters]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -49,7 +45,7 @@ const TasksKanbanPage = () => {
     }
   };
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = tasks;
 
     if (filters.search) {
@@ -77,7 +73,11 @@ const TasksKanbanPage = () => {
     }
 
     setFilteredTasks(filtered);
-  };
+  }, [filters, tasks]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   const handleFilterChange = (field, value) => {
     setFilters(prev => ({ ...prev, [field]: value }));

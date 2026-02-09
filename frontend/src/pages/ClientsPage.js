@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { clientsAPI, tasksAPI } from '../api';
 import toast from 'react-hot-toast';
-import { FiPlus, FiEdit2, FiTrash2, FiBriefcase, FiUser, FiMail, FiPhone, FiMapPin, FiFileText, FiActivity } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiBriefcase, FiUser, FiMail, FiPhone, FiMapPin, FiActivity } from 'react-icons/fi';
 
 export const ClientsPage = () => {
   const [clients, setClients] = useState([]);

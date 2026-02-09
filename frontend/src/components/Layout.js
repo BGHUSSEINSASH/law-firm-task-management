@@ -132,12 +132,6 @@ export const Layout = ({ children }) => {
 
 const NavLink = ({ icon: Icon, label, href, sidebarOpen }) => {
   const navigate = useNavigate();
-  const [isActive, setIsActive] = React.useState(false);
-
-  React.useEffect(() => {
-    const currentPath = window.location.pathname;
-    setIsActive(currentPath === href);
-  }, [href]);
 
   return (
     <button

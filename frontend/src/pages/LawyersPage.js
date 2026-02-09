@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { FiUser, FiPlus, FiEdit2, FiTrash2, FiSearch, FiAward, FiX, FiActivity } from 'react-icons/fi';
-import { lawyersAPI, tasksAPI } from '../api';
+import { FiUser, FiPlus, FiEdit2, FiTrash2, FiSearch, FiAward, FiX } from 'react-icons/fi';
+import { lawyersAPI } from '../api';
 
 export const LawyersPage = () => {
   const [lawyers, setLawyers] = useState([]);
-  const [tasks, setTasks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -62,39 +60,12 @@ export const LawyersPage = () => {
 
   const fetchData = async () => {
     try {
-      const [lawyersRes, tasksRes] = await Promise.all([
-        lawyersAPI.getAll(),
-        tasksAPI.getAll({})
-      ]);
-      
+      const lawyersRes = await lawyersAPI.getAll();
       setLawyers(lawyersRes);
-      if (tasksRes.tasks) {
-        setTasks(tasksRes.tasks);
-      } else if (Array.isArray(tasksRes)) {
-        setTasks(tasksRes);
-      }
-      setLoading(false);
     } catch (error) {
       console.error('Error:', error);
       toast.error('فشل تحميل البيانات');
-      setLoading(false);
     }
-  };
-
-  const getLawyerStats = (lawyerId) => {
-    const assignedTasks = tasks.filter(t => t.assigned_to === lawyerId);
-    const mainLawyerTasks = tasks.filter(t => t.main_lawyer_id === lawyerId);
-    const allTasks = [...new Set([...assignedTasks, ...mainLawyerTasks])];
-    
-    return {
-      assigned: assignedTasks.length,
-      mainLawyer: mainLawyerTasks.length,
-      total: allTasks.length,
-      completed: allTasks.filter(t => t.status === 'completed').length,
-      inProgress: allTasks.filter(t => t.status === 'in_progress').length,
-      pending: allTasks.filter(t => t.status === 'pending').length,
-      needsApproval: assignedTasks.filter(t => t.approval_status === 'pending_assigned_lawyer').length,
-    };
   };
 
   const handleAddLawyer = (e) => {

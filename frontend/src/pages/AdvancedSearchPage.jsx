@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useI18n } from '../contexts/I18nContext';
-import { FiSearch, FiFilter, FiX } from 'react-icons/fi';
+import { FiSearch, FiX } from 'react-icons/fi';
 import API from '../api';
 import toast from 'react-hot-toast';
 
@@ -17,15 +17,7 @@ export const AdvancedSearchPage = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (searchQuery.length > 0) {
-      performSearch();
-    } else {
-      setResults([]);
-    }
-  }, [searchQuery, filters]);
-
-  const performSearch = async () => {
+  const performSearch = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -65,7 +57,15 @@ export const AdvancedSearchPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters, searchQuery, t]);
+
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      performSearch();
+    } else {
+      setResults([]);
+    }
+  }, [searchQuery, filters, performSearch]);
 
   const clearFilters = () => {
     setSearchQuery('');

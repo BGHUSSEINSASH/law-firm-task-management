@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useI18n } from '../contexts/I18nContext';
 import { FiPlus, FiEdit2, FiTrash2, FiEye, FiDownload } from 'react-icons/fi';
 import API from '../api';
@@ -19,11 +19,7 @@ export const TemplatesManagementPage = () => {
   });
   const [templateVars, setTemplateVars] = useState({});
 
-  useEffect(() => {
-    fetchTemplates();
-  }, []);
-
-  const fetchTemplates = async () => {
+  const fetchTemplates = useCallback(async () => {
     try {
       setLoading(true);
       const response = await API.get('/api/templates');
@@ -34,7 +30,11 @@ export const TemplatesManagementPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    fetchTemplates();
+  }, [fetchTemplates]);
 
   const handleSaveTemplate = async () => {
     if (!formData.name || !formData.content) {
@@ -87,7 +87,7 @@ export const TemplatesManagementPage = () => {
     if (!selectedTemplate) return;
 
     try {
-      const response = await API.post('/api/templates/render', {
+      await API.post('/api/templates/render', {
         templateId: selectedTemplate.id,
         variables: templateVars,
       });

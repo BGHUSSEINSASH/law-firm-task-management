@@ -6,7 +6,6 @@ import { I18nProvider } from './contexts/I18nContext';
 import { PrivateRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 import { LoginPage } from './pages/LoginPage';
-import { DashboardPage } from './pages/DashboardPage';
 import { TasksPage } from './pages/TasksPage';
 import TaskDetailsPage from './pages/TaskDetailsPage';
 import { UsersPage } from './pages/UsersPage';
@@ -17,7 +16,6 @@ import { StagesPage } from './pages/StagesPage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import ActivityLogPage from './pages/ActivityLogPage';
 import TasksKanbanPage from './pages/TasksKanbanPage';
-import ReportsPageNew from './pages/ReportsPageNew';
 import InvoicesPage from './pages/InvoicesPage';
 import AdminsPage from './pages/AdminsPage';
 import AdminManagementPage from './pages/AdminManagementPage';
@@ -70,7 +68,7 @@ function App() {
             />
 
             {/* Fallback */}
-            <Route path="/" element={<PrivateRoute><Layout><DashboardPage /></Layout></PrivateRoute>} />
+            <Route path="/" element={<PrivateRoute><Layout><DashboardPageAdvanced /></Layout></PrivateRoute>} />
           </Routes>
         </AuthProvider>
       </I18nProvider>

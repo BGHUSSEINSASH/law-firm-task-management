@@ -2,7 +2,7 @@ import React from 'react';
 import { useI18n } from '../contexts/I18nContext';
 
 export const LanguageSwitcher = () => {
-  const { language, changeLanguage, t } = useI18n();
+  const { language, changeLanguage } = useI18n();
 
   const languages = [
     { code: 'ar', name: 'العربية', flag: '🇸🇦' },

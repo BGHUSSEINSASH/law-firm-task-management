@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { FiUser, FiUsers, FiPlus, FiEdit2, FiTrash2, FiSearch, FiX, FiShield, FiCheck, FiAlertCircle, FiLock, FiUnlock } from 'react-icons/fi';
+import { FiUser, FiUsers, FiPlus, FiEdit2, FiTrash2, FiSearch, FiX, FiShield, FiCheck, FiAlertCircle, FiLock } from 'react-icons/fi';
 
 export const AdminManagementPage = () => {
   const { user } = useAuth();

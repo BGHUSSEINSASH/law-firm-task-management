@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useI18n } from '../contexts/I18nContext';
 import { FiTrash2, FiRefreshCw, FiSmartphone, FiGlobe } from 'react-icons/fi';
 import API from '../api';
@@ -10,11 +10,7 @@ export const SessionManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const [revoking, setRevoking] = useState(null);
 
-  useEffect(() => {
-    fetchSessions();
-  }, []);
-
-  const fetchSessions = async () => {
+  const fetchSessions = useCallback(async () => {
     try {
       setLoading(true);
       const response = await API.get('/api/auth/sessions');
@@ -25,7 +21,11 @@ export const SessionManagementPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    fetchSessions();
+  }, [fetchSessions]);
 
   const revokeSession = async (sessionId) => {
     try {
@@ -47,11 +47,6 @@ export const SessionManagementPage = () => {
     if (userAgent.includes('iPhone')) return { name: 'iPhone', icon: '📱' };
     if (userAgent.includes('Android')) return { name: 'Android', icon: '🤖' };
     return { name: 'Device', icon: '📲' };
-  };
-
-  const getLocationInfo = (ip) => {
-    // Mock location - في الإنتاج ستحتاج إلى GeoIP API
-    return 'موقع غير معروف';
   };
 
   if (loading) {

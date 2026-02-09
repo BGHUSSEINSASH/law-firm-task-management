@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FiUpload, FiX, FiDownload, FiFile, FiImage, FiArchive, FiAlertCircle } from 'react-icons/fi';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -13,12 +13,7 @@ const TaskFilesManager = ({ taskId }) => {
   const [requirements, setRequirements] = useState(null);
   const [selectedFiles, setSelectedFiles] = useState(null);
 
-  useEffect(() => {
-    fetchFiles();
-    fetchRequirements();
-  }, [taskId]);
-
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
@@ -33,9 +28,9 @@ const TaskFilesManager = ({ taskId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [taskId]);
 
-  const fetchRequirements = async () => {
+  const fetchRequirements = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
@@ -46,7 +41,12 @@ const TaskFilesManager = ({ taskId }) => {
     } catch (error) {
       console.error('Failed to fetch requirements:', error);
     }
-  };
+  }, [user?.role]);
+
+  useEffect(() => {
+    fetchFiles();
+    fetchRequirements();
+  }, [fetchFiles, fetchRequirements]);
 
   const handleDrag = (e) => {
     e.preventDefault();

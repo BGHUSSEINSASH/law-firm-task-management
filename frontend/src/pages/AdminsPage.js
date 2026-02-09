@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { tasksAPI, lawyersAPI, departmentsAPI } from '../api';
 import toast from 'react-hot-toast';
-import { FiUsers, FiCheckCircle, FiClock, FiTrendingUp, FiAward, FiActivity, FiPlus, FiX } from 'react-icons/fi';
+import { FiUsers, FiCheckCircle, FiClock, FiAward, FiActivity, FiPlus, FiX } from 'react-icons/fi';
 
 export const AdminsPage = () => {
   const { user } = useAuth();

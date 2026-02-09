@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useI18n } from '../contexts/I18nContext';
 import { FiDownload, FiEye, FiFilter } from 'react-icons/fi';
 import API from '../api';
@@ -6,7 +6,6 @@ import toast from 'react-hot-toast';
 
 export const PDFReportsPage = () => {
   const { t } = useI18n();
-  const [reports, setReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [loading, setLoading] = useState(false);

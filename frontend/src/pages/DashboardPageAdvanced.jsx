@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useI18n } from '../contexts/I18nContext';
 import { useAuth } from '../contexts/AuthContext';
 import { FiTrendingUp, FiCheckCircle, FiClock, FiAlertCircle, FiBarChart2 } from 'react-icons/fi';
@@ -20,11 +20,7 @@ export const DashboardPage = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboardStats();
-  }, []);
-
-  const fetchDashboardStats = async () => {
+  const fetchDashboardStats = useCallback(async () => {
     try {
       setLoading(true);
       const tasksRes = await API.get('/api/tasks');
@@ -95,7 +91,11 @@ export const DashboardPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, [fetchDashboardStats]);
 
   if (loading) {
     return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { FiUser, FiMail, FiBriefcase, FiPlus, FiEdit2, FiTrash2, FiSearch, FiX, FiActivity } from 'react-icons/fi';
+import { FiUser, FiMail, FiBriefcase, FiPlus, FiEdit2, FiTrash2, FiSearch, FiX } from 'react-icons/fi';
 import { tasksAPI } from '../api';
 
 export const UsersPage = () => {

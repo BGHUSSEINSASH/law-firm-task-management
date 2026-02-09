@@ -158,6 +158,9 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    permissions:
+      id-token: write
+      contents: read
     
     steps:
       - uses: actions/checkout@v4
@@ -165,12 +168,9 @@ jobs:
       - name: Configure AWS credentials
         if: success()
         uses: aws-actions/configure-aws-credentials@v4
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: us-east-1
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
       
       - name: Update ECS service
         if: success()
@@ -191,10 +191,9 @@ jobs:
       - name: Authenticate to Google Cloud
         if: success()
         uses: google-github-actions/auth@v2
-        env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         with:
-          credentials_json: ${{ env.GCP_SA_KEY }}
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_ID_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
       
       - name: Setup Google Cloud CLI
         uses: google-github-actions/setup-gcloud@v2
@@ -204,8 +203,8 @@ jobs:
         run: |
           gcloud run deploy law-firm-backend \
             --source . \
-            --project law-firm-project \
-            --region us-central1 \
+            --project ${{ vars.GCP_PROJECT_ID }} \
+            --region ${{ vars.GCP_REGION }} \
             --allow-unauthenticated \
             --update-env-vars NODE_ENV=production
       
@@ -214,8 +213,8 @@ jobs:
         run: |
           gcloud run deploy law-firm-frontend \
             --source . \
-            --project law-firm-project \
-            --region us-central1 \
+            --project ${{ vars.GCP_PROJECT_ID }} \
+            --region ${{ vars.GCP_REGION }} \
             --allow-unauthenticated
 
   security-scan:
