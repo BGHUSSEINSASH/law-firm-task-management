@@ -41,19 +41,19 @@ export const Layout = ({ children }) => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" dir="rtl">
+    <div className="app-shell flex min-h-screen" dir="rtl">
       {/* Sidebar */}
-      <aside className={`${sidebarOpen ? 'w-72' : 'w-24'} bg-gradient-to-b from-slate-900 to-slate-800 border-l border-slate-700/50 transition-all duration-300 flex flex-col shadow-2xl`}>
+      <aside className={`${sidebarOpen ? 'w-72' : 'w-24'} glass-card border-l border-slate-700/40 transition-all duration-300 flex flex-col`}> 
         {/* Logo Section */}
-        <div className="p-6 border-b border-slate-700/50 flex items-center justify-between group">
+        <div className="p-6 border-b border-slate-700/40 flex items-center justify-between group">
           {sidebarOpen && (
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">⚖️</span>
               </div>
               <div>
-                <h1 className="text-lg font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Law Pro</h1>
-                <p className="text-xs text-slate-500">نظام إدارة المهام</p>
+                <h1 className="text-lg font-bold bg-gradient-to-r from-indigo-300 to-sky-300 bg-clip-text text-transparent">Law Pro</h1>
+                <p className="text-xs text-slate-400">نظام إدارة المهام</p>
               </div>
             </div>
           )}
@@ -79,16 +79,16 @@ export const Layout = ({ children }) => {
         </nav>
 
         {/* User Info */}
-        <div className="p-4 border-t border-slate-700/50">
+        <div className="p-4 border-t border-slate-700/40">
           {sidebarOpen ? (
             <div className="space-y-4">
-              <div className="bg-gradient-to-r from-slate-700/50 to-slate-600/50 p-4 rounded-lg border border-slate-600/50">
+              <div className="bg-gradient-to-r from-slate-700/40 to-slate-600/40 p-4 rounded-xl border border-slate-600/40">
                 <p className="text-sm font-semibold text-white truncate">{user?.full_name}</p>
                 <p className="text-xs text-slate-400 mt-1">{getRoleLabel(user?.role)}</p>
               </div>
               <button
                 onClick={handleLogout}
-                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 py-2 rounded-lg flex items-center gap-2 justify-center transition duration-300 font-semibold shadow-lg shadow-red-500/30"
+                className="w-full bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 justify-center transition duration-300 font-semibold shadow-lg shadow-rose-500/30"
               >
                 <FiLogOut size={18} />
                 {t('nav.logout')}
@@ -97,7 +97,7 @@ export const Layout = ({ children }) => {
           ) : (
             <button
               onClick={handleLogout}
-              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white p-2 rounded-lg flex items-center justify-center transition duration-300 shadow-lg shadow-red-500/30"
+              className="w-full bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white p-2 rounded-xl flex items-center justify-center transition duration-300 shadow-lg shadow-rose-500/30"
             >
               <FiLogOut size={20} />
             </button>
@@ -108,8 +108,8 @@ export const Layout = ({ children }) => {
       {/* Main Content */}
       <main className="flex-1 overflow-auto flex flex-col">
         {/* Top Bar */}
-        <div className="bg-gradient-to-r from-slate-800/80 to-slate-700/80 backdrop-blur-xl border-b border-slate-700/50 px-8 py-4 flex items-center justify-between sticky top-0 z-40 shadow-lg">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">{t('dashboard.title')}</h2>
+        <div className="glass-card border-b border-slate-700/40 px-8 py-4 flex items-center justify-between sticky top-0 z-40">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-300 via-sky-300 to-cyan-300 bg-clip-text text-transparent">{t('dashboard.title')}</h2>
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
             <NotificationsCenter />
