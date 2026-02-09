@@ -159,6 +159,7 @@ export const translations = {
       editTask: 'تعديل المهمة',
       taskCode: 'رمز المهمة',
       taskDetails: 'تفاصيل المهمة',
+      statusLabel: 'الحالة',
       status: {
         open: 'مفتوحة',
         inProgress: 'قيد التقدم',
@@ -442,6 +443,7 @@ export const translations = {
       editTask: 'Edit Task',
       taskCode: 'Task Code',
       taskDetails: 'Task Details',
+      statusLabel: 'Status',
       status: {
         open: 'Open',
         inProgress: 'In Progress',

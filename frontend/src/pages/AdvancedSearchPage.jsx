@@ -125,7 +125,7 @@ export const AdvancedSearchPage = () => {
             }
             className="px-4 py-2 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white text-sm focus:outline-none focus:border-indigo-500 transition"
           >
-            <option value="">{t('tasks.status')}</option>
+            <option value="">{t('tasks.statusLabel')}</option>
             <option value="open">مفتوحة</option>
             <option value="in_progress">قيد التقدم</option>
             <option value="review">قيد المراجعة</option>

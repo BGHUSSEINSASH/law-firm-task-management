@@ -77,7 +77,7 @@ export const PDFReportsPage = () => {
             {/* Status Filter */}
             <div>
               <label className="text-sm font-medium text-slate-300 mb-2 block">
-                {t('tasks.status')}
+                {t('tasks.statusLabel')}
               </label>
               <select
                 value={filters.status}
